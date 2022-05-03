@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+.btn-delete:hover {
+  background-color: red;
+  color: white;
+}
+.btn-edit:hover {
+  background-color: orange;
+  color: white;
+}
