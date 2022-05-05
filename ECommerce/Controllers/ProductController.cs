@@ -97,8 +97,8 @@ namespace ECommerce.Controllers
                     myCommand.Parameters.AddWithValue("@ProductPrice", product.price);
                     myCommand.Parameters.AddWithValue("@ProductSale", product.sale);
                     myCommand.Parameters.AddWithValue("@ProductCategory", product.categoryId);
-                    myCommand.Parameters.AddWithValue("@ProductCreated", DateTime.UtcNow);
-                    myCommand.Parameters.AddWithValue("@ProductEdited", DateTime.UtcNow);
+                    myCommand.Parameters.AddWithValue("@ProductCreated", DateTime.Now);
+                    myCommand.Parameters.AddWithValue("@ProductEdited", DateTime.Now);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);

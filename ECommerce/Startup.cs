@@ -9,6 +9,8 @@ using Microsoft.Extensions.FileProviders;
 
 using Newtonsoft.Json.Serialization;
 using System.IO;
+using Migrations.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce
 {
@@ -34,6 +36,10 @@ namespace ECommerce
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddControllers();
+            services.AddDbContext<StoreContext>(opt =>
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("EcommerceConn"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -70,7 +70,7 @@ namespace ECommerce.Controllers
             string query = @"
                            insert into Users
                            values (@UserName, @UserSurname, @UserEmail, 
-                            @UserPassword, 1)
+                            @UserPassword, @UserRoleId)
                             ";
 
             DataTable table = new DataTable();
@@ -81,10 +81,12 @@ namespace ECommerce.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    var id = user.roleId == 1 ? 1 : 2;
                     myCommand.Parameters.AddWithValue("@UserName", user.name);
                     myCommand.Parameters.AddWithValue("@UserSurname", user.surname);
                     myCommand.Parameters.AddWithValue("@UserEmail", user.email);
                     myCommand.Parameters.AddWithValue("@UserPassword", user.password);
+                    myCommand.Parameters.AddWithValue("@UserRoleId", id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
