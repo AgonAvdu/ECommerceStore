@@ -20,14 +20,16 @@ function Profile() {
     sale: "",
     categoryId: 1,
   });
+  const [render, setRender] = useState(false);
 
   useEffect(() => {
     fetch(variables.API_URL + "user")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
+        setRender(false);
       });
-  }, [users]);
+  }, [render]);
 
   const addClick = () => {
     setModalTitle("User");
@@ -39,7 +41,6 @@ function Profile() {
       email: "",
       password: "",
     });
-    console.log(user);
   };
 
   const editClick = (user) => {
@@ -72,6 +73,7 @@ function Profile() {
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
@@ -98,6 +100,7 @@ function Profile() {
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
@@ -118,6 +121,7 @@ function Profile() {
         .then(
           (result) => {
             alert(result);
+            setRender(true);
           },
           (error) => {
             alert("Failed", error);
@@ -141,7 +145,7 @@ function Profile() {
       >
         Add User
       </button>
-      <table className="table table-hover table-responsive">
+      <table className="table table-hover table-responsive align-middle ">
         <thead>
           <tr>
             <th>Id</th>

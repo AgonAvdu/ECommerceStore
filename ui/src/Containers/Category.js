@@ -9,14 +9,16 @@ function Categories() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [category, setCategory] = useState({});
+  const [render, setRender] = useState(false);
 
   useEffect(() => {
     fetch(variables.API_URL + "category")
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
+        setRender(false);
       });
-  }, [categories]);
+  }, [render]);
 
   const addClick = () => {
     setModalTitle("Category");
@@ -47,6 +49,7 @@ function Categories() {
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
@@ -70,6 +73,7 @@ function Categories() {
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
@@ -89,6 +93,7 @@ function Categories() {
         .then(
           (result) => {
             alert(result);
+            setRender(true);
           },
           (error) => {
             alert("Failed", error);
@@ -112,7 +117,7 @@ function Categories() {
       >
         Add Category
       </button>
-      <table className="table table-hover table-responsive">
+      <table className="table table-hover table-responsive align-middle">
         <thead>
           <tr>
             <th>Id</th>

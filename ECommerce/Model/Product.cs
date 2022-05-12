@@ -30,6 +30,8 @@ namespace ECommerce.Model
         public string dateCreated { get; set; }
         public string dateEdited { get; set; }
 
+        public int quantityInStock { get; set; }
+
 
 
     }

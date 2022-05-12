@@ -78,7 +78,7 @@ namespace ECommerce.Controllers
                            values (@ProductName, @ProductDescription, @ProductImg, 
                             @ProductUserId, @ProductRating, @ProductPrice, 
                             @ProductSale, @ProductCategory, @ProductCreated,
-                            @ProductEdited)
+                            @ProductEdited, @QuantityInStock)
                             ";
 
             DataTable table = new DataTable();
@@ -99,6 +99,8 @@ namespace ECommerce.Controllers
                     myCommand.Parameters.AddWithValue("@ProductCategory", product.categoryId);
                     myCommand.Parameters.AddWithValue("@ProductCreated", DateTime.Now);
                     myCommand.Parameters.AddWithValue("@ProductEdited", DateTime.Now);
+                    myCommand.Parameters.AddWithValue("@ProductQuantity", product.quantityInStock);
+
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -114,7 +116,10 @@ namespace ECommerce.Controllers
         public JsonResult Put(Product product)
         {
             string query = @"update Products 
-                             set name = @ProductName 
+                             set name = @ProductName, description = @ProductDescription, 
+                             imgUrl = @ProductImg, userId = @ProductUserId, rating = @ProductRating,
+                             price = @ProductPrice, sale = @ProductSale, categoryId = @ProductCategory,
+                             quantityInStock = @ProductQuantity
                               where id = @ProductId";
 
             DataTable table = new DataTable();
@@ -127,6 +132,14 @@ namespace ECommerce.Controllers
                 {
                     myCommand.Parameters.AddWithValue("@ProductId", product.id);
                     myCommand.Parameters.AddWithValue("@ProductName", product.name);
+                    myCommand.Parameters.AddWithValue("@ProductDescription", product.description);
+                    myCommand.Parameters.AddWithValue("@ProductImg", product.imgUrl);
+                    myCommand.Parameters.AddWithValue("@ProductUserId", product.userId);
+                    myCommand.Parameters.AddWithValue("@ProductRating", product.rating);
+                    myCommand.Parameters.AddWithValue("@ProductPrice", product.price);
+                    myCommand.Parameters.AddWithValue("@ProductSale", product.sale);
+                    myCommand.Parameters.AddWithValue("@ProductCategory", product.categoryId);
+                    myCommand.Parameters.AddWithValue("@ProductQuantity", product.quantityInStock);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

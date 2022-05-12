@@ -13,43 +13,49 @@ function Gallery() {
     id: 0,
     name: "",
     description: "",
-    imgUrl: "default.png",
+    imgUrl: "placeholder.png",
     userId: 1,
     rating: "",
     price: "",
     sale: "",
     categoryId: 1,
+    quantityInStock: 100,
   });
+  const [render, setRender] = useState(false);
 
   useEffect(() => {
     fetch(variables.API_URL + "product")
       .then((response) => response.json())
       .then((data) => {
         setProducts(data);
+        setRender(false);
       });
-  }, [products]);
+  }, [render]);
 
   const addClick = () => {
     setModalTitle("Product");
     setModalAction("Add Product");
     setProduct({
+      ...product,
       id: 0,
       name: "",
       description: "",
-      imgUrl: "default.png",
+      imgUrl: "placeholder.png",
       userId: 1,
       rating: "",
       price: "",
       sale: "",
       categoryId: 1,
+      quantityInStock: 0,
     });
-    console.log(product);
+    setRender(true);
   };
 
   const editClick = (product) => {
     setModalTitle("Product");
     setModalAction("Edit Product");
     setProduct({
+      ...product,
       id: product.id,
       name: product.name,
       description: product.description,
@@ -59,7 +65,9 @@ function Gallery() {
       price: product.price,
       sale: product.sale,
       categoryId: product.categoryId,
+      quantityInStock: product.quantityInStock,
     });
+    console.log(product);
   };
 
   const createClick = () => {
@@ -78,12 +86,14 @@ function Gallery() {
         price: product.price,
         sale: product.sale,
         categoryId: product.categoryId,
+        quantityInStock: product.quantityInStock,
       }),
     })
       .then((res) => res.json())
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
@@ -101,18 +111,29 @@ function Gallery() {
       body: JSON.stringify({
         id: product.id,
         name: product.name,
+        description: product.description,
+        imgUrl: product.imgUrl,
+        userId: product.userId,
+        rating: product.rating,
+        price: product.price,
+        sale: product.sale,
+        categoryId: product.categoryId,
+        quantityInStock: product.quantityInStock,
       }),
     })
       .then((res) => res.json())
       .then(
         (result) => {
           alert(result);
+          setRender(true);
         },
         (error) => {
           alert("Failed", error);
         }
       );
+    console.log(product);
   };
+
   const deleteClick = (id) => {
     console.log(id);
     if (window.confirm("Are you sure?")) {
@@ -127,6 +148,7 @@ function Gallery() {
         .then(
           (result) => {
             alert(result);
+            setRender(true);
           },
           (error) => {
             alert("Failed", error);
@@ -139,25 +161,21 @@ function Gallery() {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
-  function formatDate(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? "pm" : "am";
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    var strTime = hours + ":" + minutes + " " + ampm;
-    return (
-      date.getMonth() +
-      1 +
-      "/" +
-      date.getDate() +
-      "/" +
-      date.getFullYear() +
-      "  " +
-      strTime
-    );
-  }
+  const imageUpload = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", e.target.files[0], e.target.files[0].name);
+
+    fetch(variables.API_URL + "product/SaveFile", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProduct({ ...product, imgUrl: data });
+      });
+  };
 
   return (
     <div>
@@ -170,7 +188,7 @@ function Gallery() {
       >
         Add Product
       </button>
-      <table className="table table-hover table-responsive">
+      <table className="table table-hover table-responsive align-middle">
         <thead>
           <tr>
             <th>Picture</th>
@@ -184,20 +202,23 @@ function Gallery() {
             <th>Category</th>
             <th>Date Created</th>
             <th>Date Edited</th>
+            <th>Quantity in Stock</th>
             <th>Options</th>
           </tr>
         </thead>
 
         <tbody>
           {products.map((product) => {
-            const dCreated = new Date(product.dateCreated);
-            const dEdited = new Date(product.dateEdited);
-            const formatDCreated = formatDate(dCreated);
-            const formatDEdited = formatDate(dEdited);
-
             return (
-              <tr key={product.id}>
-                <td>{product.imgUrl}</td>
+              <tr key={product.id} className="">
+                <td>
+                  <img
+                    alt="product"
+                    width="50px"
+                    height="50px"
+                    src={variables.PHOTO_URL + product.imgUrl}
+                  />
+                </td>
                 <td>{product.id}</td>
                 <td>{product.name}</td>
                 <td>{product.description}</td>
@@ -206,8 +227,9 @@ function Gallery() {
                 <td>{product.price}</td>
                 <td>{product.sale}</td>
                 <td>{product.categoryId}</td>
-                <td>{formatDCreated}</td>
-                <td>{formatDEdited}</td>
+                <td>{product.dateCreated}</td>
+                <td>{product.dateEdited}</td>
+                <td>{product.quantityInStock}</td>
                 <td>
                   <button
                     type="button"
@@ -258,6 +280,7 @@ function Gallery() {
         updateClick={updateClick}
         changeField={changeField}
         object={product}
+        imageUpload={imageUpload}
       />
     </div>
   );

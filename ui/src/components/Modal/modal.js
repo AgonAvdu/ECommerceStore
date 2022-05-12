@@ -1,5 +1,5 @@
 import React from "react";
-
+import { variables } from "../../hoc/Variables";
 function Modal({
   modalTitle,
   modalAction,
@@ -7,37 +7,34 @@ function Modal({
   updateClick,
   changeField,
   object,
+  imageUpload,
 }) {
   let form = <div></div>;
   switch (modalTitle) {
-    case "Category":
-      form = (
-        <div>
-          <div className="input-group mb-3">
-            <span className="input-group-text">Name</span>
-            <input
-              type="text"
-              name="name"
-              className="form-control"
-              value={object.name}
-              onChange={changeField}
-            />
-          </div>
-        </div>
-      );
-      break;
     case "Product":
       form = (
-        <div>
-          <div className="input-group mb-3">
-            <span className="input-group-text">Name</span>
-            <input
-              type="text"
-              name="name"
-              className="form-control"
-              value={object.name}
-              onChange={changeField}
+        <div className="">
+          <div className="p-2 w-50 bd-highlight">
+            <div className="input-group mb-3">
+              <span className="input-group-text">Name</span>
+              <input
+                type="text"
+                name="name"
+                className="form-control"
+                value={object.name}
+                onChange={changeField}
+              />
+            </div>
+          </div>
+          <div className="p-2 w-50 bd-highlight">
+            <img
+              alt="Product"
+              height="250px"
+              width="250px"
+              src={variables.PHOTO_URL + object.imgUrl}
             />
+            {console.log(variables.PHOTO_URL + object.imgUrl)}
+            <input className="m-2" type="file" onChange={imageUpload} />
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text">Description</span>
@@ -51,7 +48,6 @@ function Modal({
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text">Image</span>
-
             <input
               name="imgUrl"
               type="text"
@@ -110,6 +106,16 @@ function Modal({
               onChange={changeField}
             />
           </div>
+          <div className="input-group mb-3">
+            <span className="input-group-text">Quantity in Stock</span>
+            <input
+              name="quantityInStock"
+              type="text"
+              className="form-control"
+              value={object.quantityInStock}
+              onChange={changeField}
+            />
+          </div>
         </div>
       );
       break;
@@ -160,6 +166,21 @@ function Modal({
       );
       break;
     default:
+      form = (
+        <div>
+          <div className="input-group mb-3">
+            <span className="input-group-text">Name</span>
+            <input
+              type="text"
+              name="name"
+              className="form-control"
+              value={object.name}
+              onChange={changeField}
+            />
+          </div>
+        </div>
+      );
+      break;
   }
 
   return (
