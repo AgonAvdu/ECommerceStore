@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { variables } from "../hoc/Variables";
 
-import { useSelector, useDispatch } from "react-redux";
-import { setProducts } from "../store/productsSlice";
-
 import Modal from "../components/Modal/modal";
 
 import "../App.css";
 
 function Gallery() {
-  // const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [product, setProduct] = useState({
@@ -26,14 +23,11 @@ function Gallery() {
   });
   const [render, setRender] = useState(false);
 
-  const products = useSelector((state) => state.products);
-  const dispatch = useDispatch();
-
   useEffect(() => {
     fetch(variables.API_URL + "product")
       .then((response) => response.json())
       .then((data) => {
-        // dispatch(setProducts(data));
+        setProducts(data);
         setRender(false);
       });
   }, [render]);
