@@ -78,7 +78,7 @@ namespace ECommerce.Controllers
                            values (@ProductName, @ProductDescription, @ProductImg, 
                             @ProductUserId, @ProductRating, @ProductPrice, 
                             @ProductSale, @ProductCategory, @ProductCreated,
-                            @ProductEdited, @QuantityInStock)
+                            @ProductEdited, @ProductQuantity)
                             ";
 
             DataTable table = new DataTable();
@@ -119,7 +119,7 @@ namespace ECommerce.Controllers
                              set name = @ProductName, description = @ProductDescription, 
                              imgUrl = @ProductImg, userId = @ProductUserId, rating = @ProductRating,
                              price = @ProductPrice, sale = @ProductSale, categoryId = @ProductCategory,
-                             quantityInStock = @ProductQuantity
+                             dateEdited = @ProductEdited, quantityInStock = @ProductQuantity
                               where id = @ProductId";
 
             DataTable table = new DataTable();
@@ -139,6 +139,7 @@ namespace ECommerce.Controllers
                     myCommand.Parameters.AddWithValue("@ProductPrice", product.price);
                     myCommand.Parameters.AddWithValue("@ProductSale", product.sale);
                     myCommand.Parameters.AddWithValue("@ProductCategory", product.categoryId);
+                    myCommand.Parameters.AddWithValue("@ProductEdited", DateTime.Now);
                     myCommand.Parameters.AddWithValue("@ProductQuantity", product.quantityInStock);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -192,7 +193,7 @@ namespace ECommerce.Controllers
 
             } catch(Exception)
             {
-                return new JsonResult("annonymous.png");
+                return new JsonResult("placeholder.png");
             }
         }
     }

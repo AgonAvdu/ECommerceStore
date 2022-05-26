@@ -9,6 +9,7 @@ function Profile() {
   const [users, setUsers] = useState([]);
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
+  const [render, setRender] = useState(false);
   const [user, setUser] = useState({
     id: 0,
     name: "",
@@ -16,12 +17,11 @@ function Profile() {
     imgUrl: "default.png",
     userId: 1,
     rating: "",
+
     price: "",
     sale: "",
     categoryId: 1,
   });
-  const [render, setRender] = useState(false);
-
   useEffect(() => {
     fetch(variables.API_URL + "user")
       .then((response) => response.json())

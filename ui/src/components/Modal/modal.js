@@ -33,7 +33,6 @@ function Modal({
               width="250px"
               src={variables.PHOTO_URL + object.imgUrl}
             />
-            {console.log(variables.PHOTO_URL + object.imgUrl)}
             <input className="m-2" type="file" onChange={imageUpload} />
           </div>
           <div className="input-group mb-3">
@@ -53,16 +52,6 @@ function Modal({
               type="text"
               className="form-control"
               value={object.imgUrl}
-              onChange={changeField}
-            />
-          </div>
-          <div className="input-group mb-3">
-            <span className="input-group-text">User ID</span>
-            <input
-              name="userId"
-              type="text"
-              className="form-control"
-              value={object.userId}
               onChange={changeField}
             />
           </div>

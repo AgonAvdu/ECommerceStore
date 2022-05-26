@@ -3,10 +3,26 @@ import { variables } from "../hoc/Variables";
 
 import Modal from "../components/Modal/modal";
 
+import { useSelector, useDispatch } from "react-redux";
+
+import {
+  getAllProducts,
+
+  // getProductsError,
+  getProductsStatus,
+  fetchProducts,
+  deleteProduct,
+  createProduct,
+  editProduct,
+} from "../store/productsSlice";
 import "../App.css";
 
 function Gallery() {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector(getAllProducts);
+  const productsStatus = useSelector(getProductsStatus);
+  // const productsError = useSelector(getProductsError);
+
   const [modalTitle, setModalTitle] = useState("");
   const [modalAction, setModalAction] = useState("");
   const [product, setProduct] = useState({
@@ -14,23 +30,19 @@ function Gallery() {
     name: "",
     description: "",
     imgUrl: "placeholder.png",
-    userId: 1,
+    userId: 5,
     rating: "",
     price: "",
     sale: "",
     categoryId: 1,
-    quantityInStock: 100,
+    quantityInStock: 0,
   });
-  const [render, setRender] = useState(false);
 
   useEffect(() => {
-    fetch(variables.API_URL + "product")
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data);
-        setRender(false);
-      });
-  }, [render]);
+    if (productsStatus === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [productsStatus, dispatch]);
 
   const addClick = () => {
     setModalTitle("Product");
@@ -41,14 +53,13 @@ function Gallery() {
       name: "",
       description: "",
       imgUrl: "placeholder.png",
-      userId: 1,
+      userId: 5,
       rating: "",
       price: "",
       sale: "",
       categoryId: 1,
       quantityInStock: 0,
     });
-    setRender(true);
   };
 
   const editClick = (product) => {
@@ -71,89 +82,45 @@ function Gallery() {
   };
 
   const createClick = () => {
-    fetch(variables.API_URL + "product", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: product.name,
-        description: product.description,
-        imgUrl: product.imgUrl,
-        userId: product.userId,
-        rating: product.rating,
-        price: product.price,
-        sale: product.sale,
-        categoryId: product.categoryId,
-        quantityInStock: product.quantityInStock,
-      }),
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          alert(result);
-          setRender(true);
-        },
-        (error) => {
-          alert("Failed", error);
-        }
-      );
+    const actionProduct = {
+      name: product.name,
+      description: product.description,
+      imgUrl: product.imgUrl,
+      userId: product.userId,
+      rating: product.rating,
+      price: product.price,
+      sale: product.sale,
+      categoryId: product.categoryId,
+      quantityInStock: product.quantityInStock,
+    };
+    dispatch(createProduct(actionProduct));
+
+    console.log(product);
   };
 
   const updateClick = () => {
-    fetch(variables.API_URL + "product", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        imgUrl: product.imgUrl,
-        userId: product.userId,
-        rating: product.rating,
-        price: product.price,
-        sale: product.sale,
-        categoryId: product.categoryId,
-        quantityInStock: product.quantityInStock,
-      }),
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          alert(result);
-          setRender(true);
-        },
-        (error) => {
-          alert("Failed", error);
-        }
-      );
+    console.log("update clicked");
+    const actionProduct = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      imgUrl: product.imgUrl,
+      userId: product.userId,
+      rating: product.rating,
+      price: product.price,
+      sale: product.sale,
+      categoryId: product.categoryId,
+      quantityInStock: product.quantityInStock,
+    };
+    dispatch(editProduct(actionProduct));
+
     console.log(product);
   };
 
   const deleteClick = (id) => {
     console.log(id);
     if (window.confirm("Are you sure?")) {
-      fetch(variables.API_URL + "product/" + id, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            alert(result);
-            setRender(true);
-          },
-          (error) => {
-            alert("Failed", error);
-          }
-        );
+      dispatch(deleteProduct(id));
     }
   };
 
