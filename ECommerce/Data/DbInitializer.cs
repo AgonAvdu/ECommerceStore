@@ -1,7 +1,6 @@
 
 
 using ECommerce.Model;
-using Migrations.Data;
 using System.Collections.Generic;
 using System.Linq;
 

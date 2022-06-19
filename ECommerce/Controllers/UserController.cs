@@ -13,7 +13,7 @@ namespace ECommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseApiController
     {
         private readonly IConfiguration _configuration;
         public UserController(IConfiguration configuration)

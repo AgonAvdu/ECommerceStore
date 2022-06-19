@@ -15,7 +15,7 @@ namespace ECommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : BaseApiController
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
@@ -25,7 +25,6 @@ namespace ECommerce.Controllers
             _configuration = configuration;
             _env = env;
         }
-
         [HttpGet]
         public JsonResult Get()
         {
@@ -37,7 +36,7 @@ namespace ECommerce.Controllers
             using (SqlConnection myConn = new SqlConnection(sqlDataSource))
             {
                 myConn.Open();
-                using(SqlCommand myCommand = new SqlCommand(query, myConn))
+                using (SqlCommand myCommand = new SqlCommand(query, myConn))
                 {
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);

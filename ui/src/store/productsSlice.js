@@ -6,6 +6,7 @@ const PRODUCTS_URL = variables.API_URL + "product";
 
 const initialState = {
   products: [],
+  product: {},
   status: "idle", //'idle' || 'loading' || 'succeeded' || 'failed'
   error: null,
 };
@@ -14,6 +15,13 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
     const response = await axios.get(PRODUCTS_URL);
+    return response.data;
+  }
+);
+export const fetchProduct = createAsyncThunk(
+  "products/fetchProduct",
+  async (id) => {
+    const response = await axios.get(PRODUCTS_URL + `/${id}`);
     return response.data;
   }
 );
@@ -34,10 +42,7 @@ export const createProduct = createAsyncThunk(
 export const editProduct = createAsyncThunk(
   "products/updateProduct",
   async (product) => {
-    console.log("edit Product async function");
-    console.log(product);
-    const response = await axios.put(PRODUCTS_URL, product);
-    console.log(response);
+    await axios.put(PRODUCTS_URL, product);
     return product;
   }
 );
@@ -57,6 +62,18 @@ export const productsSlice = createSlice({
         state.products = loadedProducts;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchProduct.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProduct.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const loadedProduct = action.payload;
+        state.product = loadedProduct[0];
+      })
+      .addCase(fetchProduct.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
@@ -90,12 +107,9 @@ export const productsSlice = createSlice({
       })
       .addCase(editProduct.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("Fulfilled");
-        console.log(action.payload);
         const objIndex = state.products.findIndex(
           (obj) => obj.id === action.payload.id
         );
-        console.log(objIndex);
         state.products[objIndex] = action.payload;
       })
       .addCase(editProduct.rejected, (state, action) => {
@@ -106,6 +120,7 @@ export const productsSlice = createSlice({
 });
 
 export const getAllProducts = (state) => state.products.products;
+export const getProduct = (state) => state.products.product;
 export const getProductsStatus = (state) => state.products.status;
 export const getProductsError = (state) => state.products.error;
 

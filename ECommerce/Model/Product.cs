@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace ECommerce.Model
@@ -15,15 +17,12 @@ namespace ECommerce.Model
         public string name { get; set; }
         public string description { get; set; }
         public string imgUrl { get; set; }
-        [Required]
         public int userId { get; set; }
-        [ForeignKey("userId")]
         public virtual User User { get; set; }
 
         public float rating { get; set; }
         public float price { get; set; }
         public float sale { get; set; }
-        [Required]
         public int categoryId { get; set; }
         [ForeignKey("categoryId")]
         public virtual Category Category { get; set; }

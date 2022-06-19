@@ -16,7 +16,6 @@ namespace ECommerce.Model
         public string surname { get; set; }
         public string email { get; set; }
         public string password { get; set; }
-        [Required]
         public int roleId { get; set; }
         [ForeignKey("roleId")]
         public virtual Role Role { get; set; }
