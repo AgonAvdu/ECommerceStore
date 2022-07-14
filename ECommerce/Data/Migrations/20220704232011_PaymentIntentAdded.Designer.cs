@@ -4,14 +4,16 @@ using ECommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ECommerce.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220704232011_PaymentIntentAdded")]
+    partial class PaymentIntentAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,9 +101,6 @@ namespace ECommerce.Data.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
 
@@ -164,9 +163,6 @@ namespace ECommerce.Data.Migrations
                     b.Property<double>("price")
                         .HasColumnType("float");
 
-                    b.Property<string>("publicId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("quantityInStock")
                         .HasColumnType("int");
 
@@ -215,14 +211,14 @@ namespace ECommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "c7ba8edf-5f81-4758-9525-47cbc36abd7e",
+                            ConcurrencyStamp = "818ceec2-6c57-4731-9196-d0b72c42a48c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "2783fde5-07a8-4305-bd34-06ce32a9d94d",
+                            ConcurrencyStamp = "943434d4-a8d3-45a9-86b6-ef6cc3c95b35",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

@@ -4,14 +4,16 @@ using ECommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ECommerce.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220702194726_OrderEntity")]
+    partial class OrderEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,12 +27,6 @@ namespace ECommerce.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClientSecret")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("buyerId")
                         .HasColumnType("nvarchar(max)");
@@ -99,9 +95,6 @@ namespace ECommerce.Data.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
 
@@ -164,9 +157,6 @@ namespace ECommerce.Data.Migrations
                     b.Property<double>("price")
                         .HasColumnType("float");
 
-                    b.Property<string>("publicId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("quantityInStock")
                         .HasColumnType("int");
 
@@ -215,14 +205,14 @@ namespace ECommerce.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "c7ba8edf-5f81-4758-9525-47cbc36abd7e",
+                            ConcurrencyStamp = "93b31237-6e5f-41f1-a45b-cee7d65a8c06",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "2783fde5-07a8-4305-bd34-06ce32a9d94d",
+                            ConcurrencyStamp = "34f75011-84e9-41de-821f-a1c268539dab",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -313,6 +303,9 @@ namespace ECommerce.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Zip")
@@ -465,6 +458,9 @@ namespace ECommerce.Data.Migrations
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("FullName")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("State")
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Zip")
