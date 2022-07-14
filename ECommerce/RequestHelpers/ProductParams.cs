@@ -9,8 +9,7 @@ namespace ECommerce.RequestHelpers
     {
         public string OrderBy { get; set; }
         public string SearchTerm { get; set; }
-        public string Users { get; set; }
-
         public string Categories { get; set; }
+
     }
 }

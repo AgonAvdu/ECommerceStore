@@ -1,23 +1,24 @@
 import styles from "./Navbar.module.css";
 import { Link } from "react-router-dom";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Badge from "@mui/material/Badge";
-import Switch from "@mui/material/Switch";
+// import Switch from "@mui/material/Switch";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
-import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
+import { getCart } from "../../store/cartSlice";
+import { getUser } from "../../store/accountSlice";
+import SignedInMenu from "./SignedInMenu/SignedInMenu";
 
 const Navbar = (props) => {
-  const [searchInput, setSearchInput] = useState("");
-  const inputRef = useRef();
-
-  function handleClick() {
-    // 👇️ access input value
-    console.log(searchInput);
+  const cart = useSelector(getCart);
+  let itemCount = 0;
+  if (cart) {
+    itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
   }
+
+  const user = useSelector(getUser);
+  console.log(user);
 
   return (
     <Box
@@ -36,14 +37,12 @@ const Navbar = (props) => {
             Logo
           </Typography>
         </Link>
-        <Switch
+        {/* <Switch
           color="secondary"
-          sx={{
-            display: "none",
-          }}
+          sx
           checked={props.darkMode}
           onChange={props.handleThemeChange}
-        />
+        /> */}
       </div>
       <Box
         component="form"
@@ -61,49 +60,66 @@ const Navbar = (props) => {
             textDecorationColor: "red",
           },
         }}
-        InputProps={{}}
-        noValidate
-        onChange={(e) => {
-          setSearchInput(e.target.value);
-        }}
         autoComplete="off"
       >
-        <TextField
-          ref={inputRef}
-          id="standard-basic"
-          label="Search Product"
-          variant="standard"
-          color="background"
-          sx={{ width: "20rem" }}
-        />
-        <Link to={`/search="${searchInput}"`}>
-          <SearchIcon
-            sx={{
-              fontSize: "2rem",
-              position: "absolute",
-              top: "1rem",
-              left: "18rem",
-              color: "text.primary",
-            }}
-            onClick={handleClick}
-          />
+        <Link className={styles.navItem} to="/gallery">
+          <Typography
+            sx={{ display: "inline-block", fontSize: "1.8rem" }}
+            color="text.secondary"
+          >
+            Gallery
+          </Typography>
         </Link>
+
+        {user && (
+          <Link className={styles.navItem} to="/products">
+            <Typography
+              sx={{ display: "inline-block", fontSize: "1.8rem" }}
+              color="text.secondary"
+            >
+              Products
+            </Typography>
+          </Link>
+        )}
       </Box>
 
       <div>
         <Link className={styles.navItem} to="/cart">
-          <Badge badgeContent={4} color="secondary">
+          <Badge badgeContent={itemCount} color="secondary">
             <ShoppingCartOutlinedIcon
               sx={{ fontSize: 40, color: "text.secondary" }}
             />
           </Badge>
         </Link>
 
-        <Link className={styles.navItem} to="/profile">
+        {/* <Link className={styles.navItem} to="/profile">
           <AccountCircleOutlinedIcon
             sx={{ color: "text.secondary", fontSize: 45 }}
           />
-        </Link>
+        </Link> */}
+
+        {user ? (
+          <SignedInMenu />
+        ) : (
+          <>
+            <Link className={styles.navItem} to="/login">
+              <Typography
+                sx={{ display: "inline-block", fontSize: "1.8rem" }}
+                color="text.secondary"
+              >
+                Login
+              </Typography>
+            </Link>
+            <Link className={styles.navItem} to="/register">
+              <Typography
+                sx={{ display: "inline-block", fontSize: "1.8rem" }}
+                color="text.secondary"
+              >
+                Register
+              </Typography>
+            </Link>
+          </>
+        )}
       </div>
     </Box>
   );

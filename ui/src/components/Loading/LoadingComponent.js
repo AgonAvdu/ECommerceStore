@@ -1,7 +1,7 @@
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-export default function LoadingComponent({ message }) {
+export default function LoadingComponent({ message = "Loading..." }) {
   return (
     <Backdrop open={true} invisible={true}>
       <Box

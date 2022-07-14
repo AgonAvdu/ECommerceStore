@@ -17,12 +17,9 @@ namespace ECommerce.Model
         public string name { get; set; }
         public string description { get; set; }
         public string imgUrl { get; set; }
-        public int userId { get; set; }
-        public virtual User User { get; set; }
-
-        public float rating { get; set; }
-        public float price { get; set; }
-        public float sale { get; set; }
+        public double rating { get; set; }
+        public double price { get; set; }
+        public int sale { get; set; }
         public int categoryId { get; set; }
         [ForeignKey("categoryId")]
         public virtual Category Category { get; set; }
@@ -30,6 +27,8 @@ namespace ECommerce.Model
         public string dateEdited { get; set; }
 
         public int quantityInStock { get; set; }
+
+        public string publicId { get; set; }
 
 
 

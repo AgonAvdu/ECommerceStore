@@ -8,11 +8,20 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { variables } from "../../../hoc/Variables";
-
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart, getCartStatus } from "../../../store/cartSlice";
 
 const ProductCard = ({ product }) => {
+  const dispatch = useDispatch();
+  const cartStatus = useSelector(getCartStatus);
+
+  const handleAddItem = (productId) => {
+    dispatch(addItemToCart(productId)).catch((error) => console.log(error));
+  };
+
   return (
     <Card
       sx={{
@@ -53,9 +62,14 @@ const ProductCard = ({ product }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button sx={{ color: "white" }} size="small">
+        <LoadingButton
+          loading={cartStatus === "loading"}
+          onClick={() => handleAddItem(product.id)}
+          sx={{ color: "white" }}
+          size="small"
+        >
           Add to cart
-        </Button>
+        </LoadingButton>
         <Button
           sx={{ color: "white" }}
           component={Link}

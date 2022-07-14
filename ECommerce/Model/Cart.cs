@@ -14,6 +14,8 @@ namespace ECommerce.Model
         public int id { get; set; }
         public string buyerId { get; set; }
         public List<CartItem> items { get; set; } = new List<CartItem>();
+        public string PaymentIntentId { get; set; }
+        public string ClientSecret { get; set; }
 
         public void AddItem(Product product, int quantity)
         {

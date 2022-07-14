@@ -1,10 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productsReducer from "./productsSlice";
-import renderSlice from "./renderSlice";
+import { accountSlice } from "./accountSlice";
+import { cartSlice } from "./cartSlice";
+import { productsSlice } from "./productsSlice";
+import { orderSlice } from "./orderSlice";
 
-export default configureStore({
+// export function configureStore() {
+//     return createStore(orderReducer);
+// }
+
+export const store = configureStore({
   reducer: {
-    products: productsReducer,
-    render: renderSlice,
+    products: productsSlice.reducer,
+    account: accountSlice.reducer,
+    cart: cartSlice.reducer,
+    order: orderSlice.reducer,
   },
 });

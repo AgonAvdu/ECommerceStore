@@ -1,32 +1,46 @@
 import "./App.css";
 
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
+import { useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Box } from "@mui/material";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./Containers/Home";
-import Profile from "./Containers/Profile";
+import Profile from "./Containers/Profile/Profile";
+import Orders from "./Containers/Profile/Orders";
+
+import Login from "./Containers/Login";
+import Register from "./Containers/Register";
 import Gallery from "./Containers/Gallery";
 import ProductDetails from "./Containers/ProductDetails";
 import Categories from "./Containers/Category.js";
-import Products from "./Containers/Products.js";
-import { getProductsStatus, fetchProducts } from "./store/productsSlice";
+import Cart from "./Containers/Cart";
+import Products from "./Containers/Admin/Products";
+
+import { fetchCartAsync } from "./store/cartSlice";
+import { fetchCurrentUser } from "./store/accountSlice";
+
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { RequireAuth } from "./util/RequireAuth";
+import CheckoutWrapper from "./Containers/Checkout/CheckoutWrapper";
 
 function App() {
   const dispatch = useDispatch();
   const [darkMode, setDarkMode] = useState(false);
 
-  const productsStatus = useSelector(getProductsStatus);
+  const initApp = useCallback(async () => {
+    try {
+      await dispatch(fetchCurrentUser());
+      await dispatch(fetchCartAsync());
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    if (productsStatus === "idle") {
-      dispatch(fetchProducts());
-    }
-  }, [productsStatus, dispatch]);
+    initApp();
+  }, [initApp]);
 
   const paletteType = darkMode ? "light" : "dark";
 
@@ -54,6 +68,7 @@ function App() {
             },
             action: {
               hover: "#7683fb",
+              disabled: "rgba(0, 0, 0, 0.26)",
             },
           }
         : {
@@ -93,10 +108,37 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/categories" element={<Categories />} />
-            <Route path={`/products`} element={<Products />} />
             <Route path="/gallery/:id" element={<ProductDetails />} />
+
+            <Route
+              path="/checkout"
+              element={
+                <RequireAuth>
+                  <CheckoutWrapper />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <RequireAuth>
+                  <Orders />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <RequireAuth>
+                  <Products />
+                </RequireAuth>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Box>
       </ThemeProvider>
