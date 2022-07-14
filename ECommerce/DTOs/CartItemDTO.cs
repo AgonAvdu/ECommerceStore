@@ -8,7 +8,6 @@
         public string imgUrl { get; set; }
         public double sale { get; set; }
         public int categoryId { get; set; }
-        public int productQuantity { get; set; }
         public int quantity { get; set; }
     }
 }

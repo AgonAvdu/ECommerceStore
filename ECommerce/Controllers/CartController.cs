@@ -1,11 +1,11 @@
 ﻿using ECommerce.Data;
 using ECommerce.DTOs;
-using ECommerce.Extensions;
 using ECommerce.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ECommerce.Controllers
@@ -22,9 +22,9 @@ namespace ECommerce.Controllers
         [HttpGet(Name = "GetCart")]
         public async Task<ActionResult<CartDTO>> GetCart()
         {
-            var cart = await RetrieveCart(GetBuyerId());
+            var cart = await RetrieveCart();
             if (cart == null) return NotFound();
-            return cart.MapCartToDto();
+            return MapCartToDto(cart);
         }
 
        
@@ -32,7 +32,7 @@ namespace ECommerce.Controllers
         [HttpPost]
         public async Task<ActionResult<CartDTO>> AddItemToCart(int productId, int quantity)
         {
-            var cart = await RetrieveCart(GetBuyerId());
+            var cart = await RetrieveCart();
 
             if (cart == null) cart = CreateCart();
             
@@ -44,7 +44,7 @@ namespace ECommerce.Controllers
 
             var result = await _context.SaveChangesAsync() > 0;
 
-            if(result) return CreatedAtRoute("GetCart", cart.MapCartToDto());
+            if(result) return CreatedAtRoute("GetCart", MapCartToDto(cart));
 
             return BadRequest(new ProblemDetails { Title = "Problem saving item to cart" });
 
@@ -55,7 +55,7 @@ namespace ECommerce.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveCartItem(int productId, int quantity)
         {
-            var cart = await RetrieveCart(GetBuyerId());
+            var cart = await RetrieveCart();
             if (cart == null) return NotFound();
             cart.RemoveItem(productId, quantity);
             var result = await _context.SaveChangesAsync() > 0;
@@ -64,38 +64,41 @@ namespace ECommerce.Controllers
             return BadRequest(new ProblemDetails { Title = "Problem removing item from basket" });
         }
 
-        private async Task<Cart> RetrieveCart(string buyerId)
+        private async Task<Cart> RetrieveCart()
         {
-            if(string.IsNullOrEmpty(buyerId))
-            {
-                Response.Cookies.Delete("buyerId");
-                return null;
-            }
             return await _context.Carts
                             .Include(i => i.items)
                             .ThenInclude(p => p.Product)
-                            .FirstOrDefaultAsync(x => x.buyerId == buyerId);
+                            .FirstOrDefaultAsync(x => x.buyerId == Request.Cookies["buyerId"]);
         }
         private Cart CreateCart()
         {
-            var BuyerId = User.Identity?.Name;
-            if (string.IsNullOrEmpty(BuyerId))
-            {
-                BuyerId = Guid.NewGuid().ToString();
-                var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
-                Response.Cookies.Append("buyerId", BuyerId, cookieOptions);
-            }
-
+            var BuyerId = Guid.NewGuid().ToString();
+            var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
+            Response.Cookies.Append("buyerId", BuyerId, cookieOptions);
             var cart = new Cart { buyerId = BuyerId };
             _context.Carts.Add(cart);
             return cart;
         }
-        private string GetBuyerId()
+        private CartDTO MapCartToDto(Cart cart)
         {
-            return User.Identity?.Name ?? Request.Cookies["buyerId"];
+            return new CartDTO
+            {
+                id = cart.id,
+                buyerId = cart.buyerId,
+                items = cart.items.Select(item => new CartItemDTO
+                {
+                    productId = item.productId,
+                    name = item.Product.name,
+                    price = item.Product.price,
+                    imgUrl = item.Product.imgUrl,
+                    sale = item.Product.sale,
+                    categoryId = item.Product.categoryId,
+                    quantity = item.quantity,
+
+                }).ToList()
+
+            };
         }
-        
-        
-        
     }
 }
