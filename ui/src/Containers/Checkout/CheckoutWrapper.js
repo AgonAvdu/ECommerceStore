@@ -1,13 +1,13 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import React, { useState } from "react";
 import Checkout from "./Checkout";
 import { useEffect } from "react";
 import axios from "axios";
 import { PAYMENTS_URL } from "../../hoc/Variables";
-import { getCart, setCart } from "../../store/cartSlice";
+import { setCart } from "../../store/cartSlice";
 import LoadingComponent from "../../components/Loading/LoadingComponent";
 
 const stripePromise = loadStripe(
@@ -17,8 +17,6 @@ const stripePromise = loadStripe(
 export default function CheckoutWrapper() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const cart = useSelector(getCart);
-  console.log(cart);
   useEffect(() => {
     axios
       .post(PAYMENTS_URL, {})

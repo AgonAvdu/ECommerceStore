@@ -1,12 +1,16 @@
 ﻿using ECommerce.Data;
 using ECommerce.DTOs;
 using ECommerce.Extensions;
+using ECommerce.Model.OrderAggregate;
 using ECommerce.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Stripe;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,34 +20,58 @@ namespace ECommerce.Controllers
     {
         private readonly PaymentService _paymentService;
         private readonly StoreContext _context;
+        private readonly IConfiguration _config;
 
-        public PaymentsController(PaymentService paymentService, StoreContext context)
+        public PaymentsController(PaymentService paymentService, StoreContext context, IConfiguration config)
         {
             _paymentService = paymentService;
             _context = context;
+            _config = config;
         } 
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<CartDTO>> CreateOrUpdatePaymentIntent()
         {
-            var cart = await _context.Carts
+            var basket = await _context.Carts
                 .RetrieveCartWithItems(User.Identity.Name)
                 .FirstOrDefaultAsync();
 
-            if (cart == null) return NotFound();
-            var intent = await _paymentService.CreateOrUpdatePaymentIntent(cart);
+            if (basket == null) return NotFound();
 
-            if (intent == null) return BadRequest(new ProblemDetails { Title = "Problem creating payment intent"});
+            var intent = await _paymentService.CreateOrUpdatePaymentIntent(basket);
 
-            cart.PaymentIntentId ??= intent.Id;
-            cart.ClientSecret ??= intent.ClientSecret;
+            if (intent == null) return BadRequest(new ProblemDetails { Title = "Problem creating payment intent" });
 
-            _context.Update(cart);
+            basket.PaymentIntentId = basket.PaymentIntentId ?? intent.Id;
+            basket.ClientSecret = basket.ClientSecret ?? intent.ClientSecret;
+
+            _context.Update(basket);
 
             var result = await _context.SaveChangesAsync() > 0;
-            if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating cart with intent" });
 
-            return cart.MapCartToDto();
+            if (!result) return BadRequest(new ProblemDetails { Title = "Problem updating basket with intent" });
+
+            return basket.MapCartToDto();
+        }
+
+        [HttpPost("webhook")]
+        public async Task<ActionResult> StripeWebhook()
+        {
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"],
+                _config["StripeSettings:WhSecret"]);
+
+            var charge = (Charge)stripeEvent.Data.Object;
+
+            var order = await _context.Orders.FirstOrDefaultAsync(x => 
+                x.PaymentIntentId == charge.PaymentIntentId);
+
+            if (charge.Status == "succeeded") order.OrderStatus = OrderStatus.PaymentReceived;
+
+            await _context.SaveChangesAsync();
+
+            return new EmptyResult();
         }
     }
 }

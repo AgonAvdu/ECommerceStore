@@ -163,6 +163,21 @@ export const productsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
+      .addCase(deleteProduct.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const filteredArray = state.products.filter(
+          (product) => !(product.id === action.payload)
+        );
+        state.products = filteredArray;
+      })
+
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       .addCase(editProduct.pending, (state) => {
         state.status = "loading";
       })

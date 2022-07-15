@@ -63,7 +63,19 @@ export default function ProductForm({ product, cancelEdit }) {
         <Typography color="white" variant="h4" gutterBottom sx={{ mb: 4 }}>
           Product Details
         </Typography>
-        <form onSubmit={handleSubmit(handleSubmitData)}>
+        <form
+          onSubmit={handleSubmit((data) => {
+            console.log("clicked");
+            if (product) {
+              console.log("edit");
+              dispatch(editProduct(data));
+            } else {
+              console.log("create");
+              dispatch(createProduct(data));
+            }
+            cancelEdit();
+          })}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Box

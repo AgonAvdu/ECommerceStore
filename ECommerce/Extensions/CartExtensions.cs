@@ -24,21 +24,16 @@ namespace ECommerce.Extensions
                     name = item.Product.name,
                     price = item.Product.price,
                     imgUrl = item.Product.imgUrl,
-                    sale = item.Product.sale,
                     categoryId = item.Product.categoryId,
-                    productQuantity = item.Product.quantityInStock,
-                    quantity = item.quantity,
-
+                    sale = item.Product.sale,
+                    quantity = item.quantity
                 }).ToList()
-
             };
         }
+
         public static IQueryable<Cart> RetrieveCartWithItems(this IQueryable<Cart> query, string buyerId)
         {
-            return query
-                .Include(i => i.items)
-                .ThenInclude(p => p.Product)
-                .Where(b => b.buyerId == buyerId);
+            return query.Include(i => i.items).ThenInclude(p => p.Product).Where(b => b.buyerId == buyerId);
         }
     }
 }

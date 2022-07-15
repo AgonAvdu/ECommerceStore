@@ -15,8 +15,12 @@ import { Edit, Delete } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import useProducts from "../../hooks/useProducts";
 import AppPagination from "../../components/Pagination/AppPagination";
-import { setPageNumber } from "../../store/productsSlice";
-import { useDispatch } from "react-redux";
+import {
+  setPageNumber,
+  deleteProduct,
+  getProductsStatus,
+} from "../../store/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { variables } from "../../hoc/Variables";
 import { useState } from "react";
 import ProductForm from "../../components/Product/ProductForm/ProductForm";
@@ -24,7 +28,9 @@ import ProductForm from "../../components/Product/ProductForm/ProductForm";
 export default function Inventory() {
   const dispatch = useDispatch();
   const { products, metaData } = useProducts();
-
+  const loading = useSelector(getProductsStatus);
+  // const [loading, setLoading] = useState(false);
+  const [target, setTarget] = useState(0);
   const [editMode, setEditMode] = useState(false);
   console.log(editMode);
 
@@ -33,6 +39,11 @@ export default function Inventory() {
   function handleSelectProduct(product) {
     setSelectedProduct(product);
     setEditMode(true);
+  }
+
+  async function handleDeleteProduct(id) {
+    setTarget(id);
+    dispatch(deleteProduct(id));
   }
 
   function cancelEdit() {
@@ -99,7 +110,12 @@ export default function Inventory() {
                     onClick={() => handleSelectProduct(product)}
                     startIcon={<Edit />}
                   />
-                  <LoadingButton startIcon={<Delete />} color="error" />
+                  <LoadingButton
+                    loading={target === product.id && loading === "loading"}
+                    startIcon={<Delete />}
+                    color="error"
+                    onClick={() => handleDeleteProduct(product.id)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

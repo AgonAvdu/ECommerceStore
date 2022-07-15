@@ -1,5 +1,10 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box } from "@mui/material";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { validationSchema } from "../../Containers/Admin/productValidation";
 import { variables } from "../../hoc/Variables";
+import AppDropZone from "../Inputs/AppDropZone/AppDropZone";
 function Modal({
   modalTitle,
   modalAction,
@@ -9,6 +14,12 @@ function Modal({
   object,
   imageUpload,
 }) {
+  const { control, watch } = useForm({
+    mode: "all",
+    resolver: yupResolver(validationSchema),
+  });
+  const watchFile = watch("file", null);
+
   let form = <div></div>;
   switch (modalTitle) {
     case "Product":
@@ -27,13 +38,26 @@ function Modal({
             </div>
           </div>
           <div className="p-2 w-50 bd-highlight">
-            <img
-              alt="Product"
-              height="250px"
-              width="250px"
-              src={variables.PHOTO_URL + object.imgUrl}
-            />
-            <input className="m-2" type="file" onChange={imageUpload} />
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <AppDropZone control={control} name="file" />
+              {watchFile ? (
+                <img
+                  src={watchFile.preview}
+                  alt="preview"
+                  style={{ maxHeight: 200 }}
+                />
+              ) : (
+                <img
+                  src={`${variables.PHOTO_URL}${object?.imgUrl} `}
+                  alt={object?.name}
+                  style={{ maxHeight: 200 }}
+                />
+              )}
+            </Box>
           </div>
           <div className="input-group mb-3">
             <span className="input-group-text">Description</span>
@@ -55,16 +79,7 @@ function Modal({
               onChange={changeField}
             />
           </div>
-          <div className="input-group mb-3">
-            <span className="input-group-text">Rating</span>
-            <input
-              name="rating"
-              type="text"
-              className="form-control"
-              value={object.rating}
-              onChange={changeField}
-            />
-          </div>
+
           <div className="input-group mb-3">
             <span className="input-group-text">Price</span>
             <input
