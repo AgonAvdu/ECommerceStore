@@ -15,6 +15,7 @@ import ProductDetails from "./Containers/ProductDetails";
 import Categories from "./Containers/Category.js";
 import Cart from "./Containers/Cart";
 import Products from "./Containers/Admin/Products";
+import ProductsV2 from "./Containers/Products";
 
 import { fetchCartAsync } from "./store/cartSlice";
 import { fetchCurrentUser } from "./store/accountSlice";
@@ -31,8 +32,8 @@ function App() {
 
   const initApp = useCallback(async () => {
     try {
-      await dispatch(fetchCurrentUser());
-      await dispatch(fetchCartAsync());
+      dispatch(fetchCurrentUser());
+      dispatch(fetchCartAsync());
     } catch (error) {
       console.log(error);
     }
@@ -110,7 +111,6 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/gallery" element={<Gallery />} />
-            <Route path="/categories" element={<Categories />} />
             <Route path="/gallery/:id" element={<ProductDetails />} />
 
             <Route
@@ -132,8 +132,32 @@ function App() {
             <Route
               path="/products"
               element={
-                <RequireAuth>
+                <RequireAuth roles={["Admin"]}>
                   <Products />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/v2/products"
+              element={
+                <RequireAuth roles={["Admin"]}>
+                  <ProductsV2 />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/v2/products"
+              element={
+                <RequireAuth roles={["Admin"]}>
+                  <ProductsV2 />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <RequireAuth roles={["Admin"]}>
+                  <Categories />
                 </RequireAuth>
               }
             />

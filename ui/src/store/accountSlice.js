@@ -81,7 +81,16 @@ export const accountSlice = createSlice({
     builder.addMatcher(
       isAnyOf(loginUser.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
-        state.account = action.payload;
+        console.log(action.payload);
+        let claims = JSON.parse(atob(action.payload.Token.split(".")[1]));
+        let roles =
+          claims[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ];
+        state.account = {
+          ...action.payload,
+          roles: typeof roles === "string" ? [roles] : roles,
+        };
       }
     );
     builder.addMatcher(isAnyOf(loginUser.rejected), (state, action) => {});

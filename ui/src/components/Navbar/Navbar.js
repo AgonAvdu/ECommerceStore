@@ -71,7 +71,11 @@ const Navbar = (props) => {
           </Typography>
         </Link>
 
-        {user && (
+        {user?.roles?.find((element) => {
+          if (element.includes("Admin")) {
+            return true;
+          }
+        }) && (
           <Link className={styles.navItem} to="/products">
             <Typography
               sx={{ display: "inline-block", fontSize: "1.8rem" }}

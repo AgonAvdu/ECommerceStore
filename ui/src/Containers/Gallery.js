@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ProductList from "../components/Product/ProductList/ProductList";
 import ProductSearch from "../components/ProductSearch/ProductSearch";
 import AppPagination from "../components/Pagination/AppPagination";
-import { Container, Grid, Paper } from "@mui/material";
+import { Container, Grid, Paper, Typography } from "@mui/material";
 import LoadingComponent from "../components/Loading/LoadingComponent";
 import {
   getProductParams,
@@ -49,6 +49,8 @@ function Gallery() {
           </Paper>
           <Paper sx={{ mb: 2, p: 2 }}>
             <FormControl>
+              <Typography>Order By</Typography>
+
               <RadioButton
                 selectedValue={productParams.orderBy}
                 options={sortOptions}
@@ -59,6 +61,7 @@ function Gallery() {
             </FormControl>
           </Paper>
           <Paper sx={{ mb: 2, p: 2 }}>
+            <Typography>Categories</Typography>
             <CheckBox
               items={availableCategories}
               checked={productParams.categories}
